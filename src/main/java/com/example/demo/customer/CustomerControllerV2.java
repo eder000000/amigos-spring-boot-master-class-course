@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-@RequestMapping(path = "api/v2/customer")
+@RequestMapping(path = "api/v2/customers")
 @RestController
 public class CustomerControllerV2 {
 
@@ -17,9 +17,18 @@ public class CustomerControllerV2 {
         this.customerService = customerService;
     }
 
-    @GetMapping(value = "all")
-    List<Customer> getCustomer(){
-        return Collections.singletonList(new Customer(0L, "v2", "a1e2i3"));
+    @GetMapping()
+    List<Customer> getCustomers(){
+        return customerService.getCustomers();
+    }
+
+    @GetMapping(path = "{customerId}")
+    Customer getCustomer(@PathVariable("customerId")Long id){
+        return customerService.getCustomers()
+                .stream()
+                .filter(customer -> customer.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("customer not found"));
     }
 
     @PostMapping("/")
